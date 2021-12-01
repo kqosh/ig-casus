@@ -101,7 +101,7 @@ public class CasusApplication {
     LOG.info(format, args);
   }
 
-  @Bean
+  @Bean //qqqq maar aparte config class
   public ArtikelRepository getRepository() {
     return repository;
   }

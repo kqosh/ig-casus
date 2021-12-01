@@ -6,6 +6,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * Voor elk fysiek artikel is er een Artikel record in de database. Het totaal aantal artikelen van een product
+ * en totaal of per winkel vind je met een count(*) query.
+ * Als een fysiek artikel is geleverd, dus echt weg is, wordt het uit de database verwijderd.
+ */
 @Entity
 public class Artikel {
 
@@ -13,9 +18,12 @@ public class Artikel {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  private String naam;
-  private String code;
+  private String naam; //qqqq drop, zit in Product
+  private String code; //qqqq FK to Product{code, naam, omschrijving}
+  //qqqq private String filiaalnaam;
+  //qqqq private String gereservedDoor;
   private long gereservedTot;
+//  private boolean verkocht;qqqq
 
   protected Artikel() {}
 
