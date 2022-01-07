@@ -1,4 +1,4 @@
-package nl.intergamma.casus;
+package nl.intergamma.casus.access;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;

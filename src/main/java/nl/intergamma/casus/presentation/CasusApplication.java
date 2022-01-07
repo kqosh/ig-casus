@@ -1,7 +1,11 @@
-package nl.intergamma.casus;
+package nl.intergamma.casus.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
+
+import nl.intergamma.casus.access.Artikel;
+import nl.intergamma.casus.access.ArtikelRepository;
+import nl.intergamma.casus.service.ArtikelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +31,8 @@ public class CasusApplication {
 
   static final String BASE_PATH = "/artikelen";
 
-  @Autowired ArtikelRepository repository;
+  @Autowired
+  ArtikelService service;
 
   public static void main(String[] args) {
     SpringApplication.run(CasusApplication.class, args);
@@ -43,7 +48,7 @@ public class CasusApplication {
   @PostMapping(BASE_PATH)
   public Artikel create(@RequestBody Artikel artikel) {
     log("create: artikel={}", artikel);
-    var result = getRepository().save(artikel);
+    var result = service.save(artikel);
     log("create: result={}", result);
     return result;
   }
@@ -60,7 +65,7 @@ public class CasusApplication {
   @Operation(summary = "Vind alle artikelen voor gegeven productcode.")
   @GetMapping(BASE_PATH)
   public List<Artikel> find(@RequestParam(value = "code") String code) {
-    return getRepository().findByCode(code);
+    return service.findByCode(code);
   }
 
   @Operation(summary = "Update artikel met gegeven id")
@@ -69,7 +74,7 @@ public class CasusApplication {
     var existingArtikel = getArtikel(artikel.getId());
     existingArtikel.setCode(artikel.getCode());
     existingArtikel.setNaam(artikel.getNaam());
-    return getRepository().save(existingArtikel);
+    return service.save(existingArtikel);
   }
 
   @Operation(summary = "Reserveer artikel met gegeven id voor een periodeInSec.")
@@ -79,18 +84,18 @@ public class CasusApplication {
       @RequestParam(value = "periodeInSec") Long periodeInSec) {
     var existingArtikel = getArtikel(id);
     existingArtikel.setGereservedTot(System.currentTimeMillis() + periodeInSec * 1000L);
-    return getRepository().save(existingArtikel);
+    return service.save(existingArtikel);
   }
 
   @Operation(summary = "Delete artikel met gegeven id.")
   @DeleteMapping(BASE_PATH + "/{id}")
   public void delete(@PathVariable(value = "id") Long id) {
     var artikel = getArtikel(id);
-    getRepository().delete(artikel);
+    service.delete(artikel);
   }
 
   private Artikel getArtikel(long id) {
-    var artikel = getRepository().findById(id);
+    var artikel = service.findById(id);
     if (artikel.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "id=" + id);
     }
@@ -99,10 +104,5 @@ public class CasusApplication {
 
   private void log(String format, Object... args) {
     LOG.info(format, args);
-  }
-
-  @Bean //qqqq maar aparte config class
-  public ArtikelRepository getRepository() {
-    return repository;
   }
 }
