@@ -72,9 +72,15 @@ public class CasusApplication {
   @PutMapping(BASE_PATH + "/{id}")
   public Artikel update(@RequestBody Artikel artikel) {
     var existingArtikel = getArtikel(artikel.getId());
-    existingArtikel.setCode(artikel.getCode());
-    existingArtikel.setNaam(artikel.getNaam());
+    validateNotReserved(existingArtikel);
+    existingArtikel.update(artikel);
     return service.save(existingArtikel);
+  }
+
+  void validateNotReserved(Artikel artikel) {
+    if (artikel.isGereserveerd()) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "artikel.id=" + artikel.getId());
+    }
   }
 
   @Operation(summary = "Reserveer artikel met gegeven id voor een periodeInSec.")
@@ -83,6 +89,7 @@ public class CasusApplication {
       @PathVariable(value = "id") Long id,
       @RequestParam(value = "periodeInSec") Long periodeInSec) {
     var existingArtikel = getArtikel(id);
+    validateNotReserved(existingArtikel);
     existingArtikel.setGereservedTot(System.currentTimeMillis() + periodeInSec * 1000L);
     return service.save(existingArtikel);
   }
@@ -91,6 +98,7 @@ public class CasusApplication {
   @DeleteMapping(BASE_PATH + "/{id}")
   public void delete(@PathVariable(value = "id") Long id) {
     var artikel = getArtikel(id);
+    validateNotReserved(artikel);
     service.delete(artikel);
   }
 
