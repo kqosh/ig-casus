@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScans;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @SpringBootApplication
 @RestController
-public class CasusApplication {
+public class CasusApplication {//qqqq split application af naar root dan doet componentscan het ook weer
   private static final Logger LOG = LoggerFactory.getLogger(CasusApplication.class);
 
   static final String BASE_PATH = "/artikelen";
