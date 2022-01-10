@@ -1,9 +1,8 @@
-package nl.intergamma.casus;
+package nl.intergamma.casus.presentation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import nl.intergamma.casus.access.Artikel;
-import nl.intergamma.casus.presentation.CasusApplication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,12 +47,12 @@ class CasusApplicationTests {
   @Test
   void crud() {
     // CREATE
-    var artikel = new Artikel("schuifmaat", "123");
+    var artikel = new Artikel("schuifmaat-code", "123");
     var createdArtikel = createArtikel(artikel);
 
     assertThat(createdArtikel.getId()).isNotNull();
     assertThat(createdArtikel.getCode()).isEqualTo(artikel.getCode());
-    assertThat(createdArtikel.getNaam()).isEqualTo(artikel.getNaam());
+    assertThat(createdArtikel.getFiliaalnaam()).isEqualTo(artikel.getFiliaalnaam());
 
     // READ: find
     var artikelen =
@@ -66,7 +65,7 @@ class CasusApplicationTests {
     assertThat(fetchedArtikel).usingRecursiveComparison().isEqualTo(createdArtikel);
 
     // UPDATE
-    fetchedArtikel.setNaam("nijptang");
+    fetchedArtikel.setFiliaalnaam("456");
     var updateRequest = new HttpEntity<>(fetchedArtikel, headers);
     restTemplate.put(baseUrl + "/" + fetchedArtikel.getId(), updateRequest, Artikel.class);
     var updatedArtikel = getArtikel(fetchedArtikel.getId());
