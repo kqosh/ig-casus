@@ -101,6 +101,8 @@ public class Artikel {
         + productCode
         + "', filiaalnaam='"
         + filiaalnaam
+        + "', stellingnummer='"
+        + stellingnummer
         + "', gereservedDoor='"
         + gereserveerdDoorUserId
         + "', gereservedTot="
