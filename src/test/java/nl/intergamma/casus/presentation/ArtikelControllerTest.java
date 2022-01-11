@@ -46,12 +46,12 @@ class ArtikelControllerTest {
     var createdArtikel = createArtikel(artikel);
 
     assertThat(createdArtikel.getId()).isNotNull();
-    assertThat(createdArtikel.getCode()).isEqualTo(artikel.getCode());
+    assertThat(createdArtikel.getProductCode()).isEqualTo(artikel.getProductCode());
     assertThat(createdArtikel.getFiliaalnaam()).isEqualTo(artikel.getFiliaalnaam());
 
     // READ: find
     var artikelen =
-        restTemplate.getForObject(baseUrl + "?code=" + artikel.getCode(), Artikel[].class);
+        restTemplate.getForObject(baseUrl + "?code=" + artikel.getProductCode(), Artikel[].class);
     assertThat(artikelen).hasSize(1);
     assertThat(artikelen[0]).isInstanceOf(Artikel.class);
     assertThat(artikelen[0]).usingRecursiveComparison().isEqualTo(createdArtikel);

@@ -19,7 +19,7 @@ public class Artikel {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  private String code; // FK to Product{code, naam, omschrijving}
+  private String productCode; // FK to Product{code, naam, omschrijving}
   private String filiaalnaam;
   private String stellingnummer;
   private String gereserveerdDoorUserId;
@@ -28,14 +28,14 @@ public class Artikel {
 
   protected Artikel() {}
 
-  public Artikel(String code, String filiaalnaam, String stellingnummer) {
-    this.code = code;
+  public Artikel(String productCode, String filiaalnaam, String stellingnummer) {
+    this.productCode = productCode;
     this.filiaalnaam = filiaalnaam;
     this.stellingnummer = stellingnummer;
   }
 
   public void update(Artikel newValues) {
-    code = newValues.getCode();
+    productCode = newValues.getProductCode();
     filiaalnaam = newValues.getFiliaalnaam();
     gereserveerdDoorUserId = newValues.getGereserveerdDoorUserId();
     gereserveerdTot = newValues.getGereserveerdTot();
@@ -46,8 +46,8 @@ public class Artikel {
     return id;
   }
 
-  public String getCode() {
-    return code;
+  public String getProductCode() {
+    return productCode;
   }
 
   public String getFiliaalnaam() {
@@ -98,7 +98,7 @@ public class Artikel {
         + "id="
         + id
         + ", code='"
-        + code
+        + productCode
         + "', filiaalnaam='"
         + filiaalnaam
         + "', gereservedDoor='"
