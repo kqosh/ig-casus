@@ -9,6 +9,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.HttpClientErrorException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -84,15 +85,37 @@ class ArtikelControllerTest {
     var createdArtikel = createArtikel(artikel);
     assertThat(createdArtikel.isGereserveerd()).isFalse();
 
+    final var userId = "jan";
+    final var otherUserId = "klaas";
+
     // RESERVEER
-    var reserveerRequest = new HttpEntity<>(createdArtikel, headers);
-    var gereserveerdArtikel =
-        restTemplate.patchForObject(
-            baseUrl + "/" + createdArtikel.getId() + "/reserveer?periodeInSec=1",
-            reserveerRequest,
-            Artikel.class);
+    var gereserveerdArtikel = reserveer(createdArtikel, userId);
     assertThat(gereserveerdArtikel.isGereserveerd()).isTrue();
+
+    // RESERVEER door een ander faalt
+    try {
+      reserveer(artikel, otherUserId);
+    } catch (HttpClientErrorException ex) {
+      assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+    }
+
+    // RESERVEER door dezelfde user slaagt
+    gereserveerdArtikel = reserveer(createdArtikel, userId);
+    assertThat(gereserveerdArtikel.isGereserveerd()).isTrue();
+
+    // qqqq update fails
+
+    // qqqq delete fails
+
     Thread.sleep(1050);
     assertThat(gereserveerdArtikel.isGereserveerd()).isFalse();
+  }
+
+  private Artikel reserveer(Artikel artikel, String userId) {
+    var reserveerRequest = new HttpEntity<>(artikel, headers);
+    return restTemplate.patchForObject(
+        baseUrl + "/" + artikel.getId() + "/reserveer?periodeInSec=1&userId=" + userId,
+        reserveerRequest,
+        Artikel.class);
   }
 }

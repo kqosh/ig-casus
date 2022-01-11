@@ -48,15 +48,16 @@ public class ArtikelController {
 
   @Operation(summary = "Update artikel met gegeven id")
   @PutMapping(BASE_PATH + "/{id}")
-  public Artikel update(@RequestBody Artikel artikel) {
+  public Artikel update(
+      @RequestBody Artikel artikel, @RequestParam(value = "userId") String userId) {
     var existingArtikel = getArtikel(artikel.getId());
-    validateNotReserved(existingArtikel);
+    validateNotReserved(existingArtikel, userId);
     existingArtikel.update(artikel);
     return service.save(existingArtikel);
   }
 
-  void validateNotReserved(Artikel artikel) {
-    if (artikel.isGereserveerd()) {
+  void validateNotReserved(Artikel artikel, String userId) {
+    if (artikel.isGereserveerd() && !artikel.getGereserveerdDoorUserId().equals(userId)) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "artikel.id=" + artikel.getId());
     }
   }
@@ -65,18 +66,20 @@ public class ArtikelController {
   @PatchMapping(BASE_PATH + "/{id}/reserveer")
   public Artikel reserveer(
       @PathVariable(value = "id") Long id,
-      @RequestParam(value = "periodeInSec") Long periodeInSec) {
+      @RequestParam(value = "periodeInSec") Long periodeInSec,
+      @RequestParam(value = "userId") String userId) {
     var existingArtikel = getArtikel(id);
-    validateNotReserved(existingArtikel);
-    existingArtikel.setGereservedTot(System.currentTimeMillis() + periodeInSec * 1000L);
+    validateNotReserved(existingArtikel, userId);
+    existingArtikel.setGereserveerd(userId, System.currentTimeMillis() + periodeInSec * 1000L);
     return service.save(existingArtikel);
   }
 
   @Operation(summary = "Delete artikel met gegeven id.")
   @DeleteMapping(BASE_PATH + "/{id}")
-  public void delete(@PathVariable(value = "id") Long id) {
+  public void delete(
+      @PathVariable(value = "id") Long id, @RequestParam(value = "userId") String userId) {
     var artikel = getArtikel(id);
-    validateNotReserved(artikel);
+    validateNotReserved(artikel, userId);
     service.delete(artikel);
   }
 

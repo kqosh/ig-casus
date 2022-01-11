@@ -20,8 +20,9 @@ public class Artikel {
 
   private String code; // FK to Product{code, naam, omschrijving}
   private String filiaalnaam;
-  private String gereservedDoor;
-  private long gereservedTot;
+//  private String stellingnummer;qqqq
+  private String gereserveerdDoorUserId;
+  private long gereserveerdTot;
   private boolean verkocht;
 
   protected Artikel() {}
@@ -40,16 +41,16 @@ public class Artikel {
       boolean verkocht) {
     this.code = code;
     this.filiaalnaam = filiaalnaam;
-    this.gereservedDoor = gereservedDoor;
-    this.gereservedTot = gereservedTot;
+    this.gereserveerdDoorUserId = gereservedDoor;
+    this.gereserveerdTot = gereservedTot;
     this.verkocht = verkocht;
   }
 
   public void update(Artikel newValues) {
     code = newValues.getCode();
     filiaalnaam = newValues.getFiliaalnaam();
-    gereservedDoor = newValues.getGereservedDoor();
-    gereservedTot = newValues.getGereservedTot();
+    gereserveerdDoorUserId = newValues.getGereserveerdDoorUserId();
+    gereserveerdTot = newValues.getGereserveerdTot();
     verkocht = newValues.isVerkocht();
   }
 
@@ -73,25 +74,22 @@ public class Artikel {
     this.filiaalnaam = filiaalnaam;
   }
 
-  public String getGereservedDoor() {
-    return gereservedDoor;
+  public String getGereserveerdDoorUserId() {
+    return gereserveerdDoorUserId;
   }
 
-  public void setGereservedDoor(String gereservedDoor) {
-    this.gereservedDoor = gereservedDoor;
+  public long getGereserveerdTot() {
+    return gereserveerdTot;
   }
 
-  public long getGereservedTot() {
-    return gereservedTot;
-  }
-
-  public void setGereservedTot(long gereservedTot) {
-    this.gereservedTot = gereservedTot;
+  public void setGereserveerd(String gereserveerdDoorUserId, long gereserveerdTot) {
+    this.gereserveerdDoorUserId = gereserveerdDoorUserId;
+    this.gereserveerdTot = gereserveerdTot;
   }
 
   @JsonIgnore
   public boolean isGereserveerd() {
-    return System.currentTimeMillis() < gereservedTot;
+    return System.currentTimeMillis() < gereserveerdTot;
   }
 
   public boolean isVerkocht() {
@@ -112,9 +110,9 @@ public class Artikel {
         + "', filiaalnaam='"
         + filiaalnaam
         + "', gereservedDoor='"
-        + gereservedDoor
+        + gereserveerdDoorUserId
         + "', gereservedTot="
-        + gereservedTot
+        + gereserveerdTot
         + ", verkocht="
         + verkocht
         + '}';
