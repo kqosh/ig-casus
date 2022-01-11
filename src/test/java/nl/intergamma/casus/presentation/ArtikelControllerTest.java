@@ -42,7 +42,7 @@ class ArtikelControllerTest {
   @Test
   void crud() {
     // CREATE
-    var artikel = new Artikel("schuifmaat-code", "123");
+    var artikel = new Artikel("schuifmaat-code", "Alphen", "1.3.2");
     var createdArtikel = createArtikel(artikel);
 
     assertThat(createdArtikel.getId()).isNotNull();
@@ -83,7 +83,7 @@ class ArtikelControllerTest {
   @Test
   void reserveer() throws InterruptedException {
     // CREATE
-    var artikel = new Artikel("waterpas", "456");
+    var artikel = new Artikel("waterpas", "Leiderdorp", "7.2.4");
     artikel = createArtikel(artikel);
     assertThat(artikel.isGereserveerd()).isFalse();
 

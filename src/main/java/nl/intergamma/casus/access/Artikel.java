@@ -1,6 +1,7 @@
 package nl.intergamma.casus.access;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,30 +21,17 @@ public class Artikel {
 
   private String code; // FK to Product{code, naam, omschrijving}
   private String filiaalnaam;
-//  private String stellingnummer;qqqq
+  private String stellingnummer;
   private String gereserveerdDoorUserId;
   private long gereserveerdTot;
   private boolean verkocht;
 
   protected Artikel() {}
 
-  public Artikel(
-          String code,
-          String filiaalnaam) {
-    this(code, filiaalnaam, null, 0, false);
-  }
-
-  public Artikel(
-      String code,
-      String filiaalnaam,
-      String gereservedDoor,
-      long gereservedTot,
-      boolean verkocht) {
+  public Artikel(String code, String filiaalnaam, String stellingnummer) {
     this.code = code;
     this.filiaalnaam = filiaalnaam;
-    this.gereserveerdDoorUserId = gereservedDoor;
-    this.gereserveerdTot = gereservedTot;
-    this.verkocht = verkocht;
+    this.stellingnummer = stellingnummer;
   }
 
   public void update(Artikel newValues) {
@@ -62,16 +50,20 @@ public class Artikel {
     return code;
   }
 
-  public void setCode(String code) {
-    this.code = code;
-  }
-
   public String getFiliaalnaam() {
     return filiaalnaam;
   }
 
   public void setFiliaalnaam(String filiaalnaam) {
     this.filiaalnaam = filiaalnaam;
+  }
+
+  public String getStellingnummer() {
+    return stellingnummer;
+  }
+
+  public void setStellingnummer(String stellingnummer) {
+    this.stellingnummer = stellingnummer;
   }
 
   public String getGereserveerdDoorUserId() {
