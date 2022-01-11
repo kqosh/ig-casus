@@ -24,6 +24,10 @@ class ArtikelControllerTest {
 
   private HttpHeaders headers;
 
+  private static final String USER_ID = "jan";
+  private static final String OTHER_USER_ID = "klaas";
+
+
   @BeforeEach
   void init() {
     baseUrl = "http://localhost:" + port + ArtikelController.BASE_PATH;
@@ -56,15 +60,12 @@ class ArtikelControllerTest {
     assertThat(fetchedArtikel).usingRecursiveComparison().isEqualTo(createdArtikel);
 
     // UPDATE
-    var userId = "jan";
     fetchedArtikel.setFiliaalnaam("456");
-    var updatedArtikel = update(fetchedArtikel, userId);
-//    restTemplate.put(baseUrl + "/" + fetchedArtikel.getId(), updateRequest, Artikel.class);
-//    var updatedArtikel = getArtikel(fetchedArtikel.getId());qqqq
+    var updatedArtikel = update(fetchedArtikel, USER_ID);
     assertThat(updatedArtikel).usingRecursiveComparison().isEqualTo(fetchedArtikel);
 
     // DELETE
-    restTemplate.delete(baseUrl + "/" + updatedArtikel.getId() + "?userId=" + userId);
+    delete(updatedArtikel, USER_ID);
     ResponseEntity<Artikel> entity =
         restTemplate.getForEntity(baseUrl + "/" + updatedArtikel.getId(), Artikel.class);
     assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -86,39 +87,42 @@ class ArtikelControllerTest {
     artikel = createArtikel(artikel);
     assertThat(artikel.isGereserveerd()).isFalse();
 
-    final var userId = "jan";//qqqq member
-    final var otherUserId = "klaas";
-
     // RESERVEER
-    artikel = reserveer(artikel, userId);
+    artikel = reserveer(artikel, USER_ID);
     assertThat(artikel.isGereserveerd()).isTrue();
 
     // RESERVEER door een ander faalt
     try {
-      reserveer(artikel, otherUserId);
+      reserveer(artikel, OTHER_USER_ID);
     } catch (HttpClientErrorException ex) {
       assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
       assertThat(ex.getMessage()).isEqualTo("artikel.id=" + artikel.getId());
     }
 
     // RESERVEER door dezelfde user slaagt
-    artikel = reserveer(artikel, userId);
+    artikel = reserveer(artikel, USER_ID);
     assertThat(artikel.isGereserveerd()).isTrue();
 
     // UPDATE door een ander faalt
     artikel.setFiliaalnaam("Leiden");
     try {
-      update(artikel, otherUserId);
+      update(artikel, OTHER_USER_ID);
     } catch (HttpClientErrorException ex) {
       assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
       assertThat(ex.getMessage()).isEqualTo("artikel.id=" + artikel.getId());
     }
 
     // UPDATE door dezelfde user slaagt
-    var updatedArtikel = update(artikel, userId);
+    var updatedArtikel = update(artikel, USER_ID);
     assertThat(updatedArtikel.getFiliaalnaam()).isEqualTo("Leiden");
 
-    // qqqq delete fails+slaagt
+    // DELETE door een ander faalt
+    try {
+      update(artikel, OTHER_USER_ID);
+    } catch (HttpClientErrorException ex) {
+      assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+      assertThat(ex.getMessage()).isEqualTo("artikel.id=" + artikel.getId());
+    }
 
     Thread.sleep(1050);
     assertThat(artikel.isGereserveerd()).isFalse();
@@ -136,5 +140,9 @@ class ArtikelControllerTest {
     var updateRequest = new HttpEntity<>(artikel, headers);
     restTemplate.put(baseUrl + "/" + artikel.getId() + "?userId=" + userId, updateRequest, Artikel.class);
     return getArtikel(artikel.getId());
+  }
+
+  private void delete(Artikel artikel, String userId) {
+    restTemplate.delete(baseUrl + "/" + artikel.getId() + "?userId=" + userId);
   }
 }
