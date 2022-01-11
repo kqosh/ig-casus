@@ -22,7 +22,7 @@ public class ArtikelService {
 
   @Transactional(readOnly = true)
   public List<Artikel> findByCode(String code) {
-    return repository.findByCode(code);
+    return repository.findByProductCode(code);
   }
 
   @Transactional

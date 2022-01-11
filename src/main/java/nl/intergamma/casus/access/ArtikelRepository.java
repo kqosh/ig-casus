@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface ArtikelRepository extends CrudRepository<Artikel, Long> {
 
-  List<Artikel> findByCode(String code);
+  List<Artikel> findByProductCode(String productCode);
 }
