@@ -1,49 +1,26 @@
 package nl.intergamma.casus.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.List;
-
 import nl.intergamma.casus.access.Artikel;
-import nl.intergamma.casus.access.ArtikelRepository;
 import nl.intergamma.casus.service.ArtikelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScans;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-@SpringBootApplication
+import java.util.List;
+
+@Component
 @RestController
-public class CasusApplication {//qqqq split application af naar root dan doet componentscan het ook weer
-  private static final Logger LOG = LoggerFactory.getLogger(CasusApplication.class);
+public class ArtikelController {
+  private static final Logger LOG = LoggerFactory.getLogger(ArtikelController.class);
 
   static final String BASE_PATH = "/artikelen";
 
-  @Autowired
-  ArtikelService service;
-
-  public static void main(String[] args) {
-    SpringApplication.run(CasusApplication.class, args);
-  }
-
-  @Operation(summary = "Test of de applicatie loopt.")
-  @GetMapping("/hello")
-  public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
-    return String.format("Hello %s!", name);
-  }
+  @Autowired ArtikelService service;
 
   @Operation(summary = "Creëer artikel.")
   @PostMapping(BASE_PATH)
