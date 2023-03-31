@@ -29,5 +29,5 @@ mvnw test
 
 ## API Documentatie
 ```
-http://localhost:8080/swagger-ui/
+http://localhost:8080/swagger-ui/ 
 ```
